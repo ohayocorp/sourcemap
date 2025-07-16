@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/ohayocorp/sourcemap"
+	"github.com/go-sourcemap/sourcemap"
 )
 
 func TestEncodeDecode(t *testing.T) {
