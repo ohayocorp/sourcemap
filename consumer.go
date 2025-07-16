@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"path"
+	"path/filepath"
+	"runtime"
 	"sort"
 )
 
@@ -30,6 +31,10 @@ func (m *sourceMap) parse(sourcemapURL string) error {
 		return err
 	}
 
+	if runtime.GOOS == "windows" && filepath.IsAbs(sourcemapURL) {
+		return m.parseWindows(sourcemapURL)
+	}
+
 	var sourceRootURL *url.URL
 	if m.SourceRoot != "" {
 		u, err := url.Parse(m.SourceRoot)
@@ -45,7 +50,7 @@ func (m *sourceMap) parse(sourcemapURL string) error {
 			return err
 		}
 		if u.IsAbs() {
-			u.Path = path.Dir(u.Path)
+			u.Path = filepath.Dir(u.Path)
 			sourceRootURL = u
 		}
 	}
@@ -66,8 +71,37 @@ func (m *sourceMap) parse(sourcemapURL string) error {
 	return nil
 }
 
+func (m *sourceMap) parseWindows(sourcemapURL string) error {
+	var sourceRoot *string
+	if m.SourceRoot != "" {
+		if filepath.IsAbs(m.SourceRoot) {
+			sourceRoot = &m.SourceRoot
+		}
+	} else if sourcemapURL != "" {
+		if filepath.IsAbs(sourcemapURL) {
+			s := filepath.Dir(sourcemapURL)
+			sourceRoot = &s
+		}
+	}
+
+	for i, src := range m.Sources {
+		m.Sources[i] = m.absSourceWindows(sourceRoot, src)
+	}
+
+	mappings, err := parseMappings(m.Mappings)
+	if err != nil {
+		return err
+	}
+
+	m.mappings = mappings
+	// Free memory.
+	m.Mappings = ""
+
+	return nil
+}
+
 func (m *sourceMap) absSource(root *url.URL, source string) string {
-	if path.IsAbs(source) {
+	if filepath.IsAbs(source) {
 		return source
 	}
 
@@ -77,12 +111,35 @@ func (m *sourceMap) absSource(root *url.URL, source string) string {
 
 	if root != nil {
 		u := *root
-		u.Path = path.Join(u.Path, source)
+		u.Path = filepath.Join(u.Path, source)
 		return u.String()
 	}
 
 	if m.SourceRoot != "" {
-		return path.Join(m.SourceRoot, source)
+		return filepath.Join(m.SourceRoot, source)
+	}
+
+	return source
+}
+
+func (m *sourceMap) absSourceWindows(root *string, source string) string {
+	if filepath.IsAbs(source) {
+		return source
+	}
+
+	if u, err := url.Parse(source); err == nil && u.IsAbs() {
+		return source
+	}
+
+	if root != nil {
+		s := *root
+		s = filepath.Join(s, source)
+
+		return s
+	}
+
+	if m.SourceRoot != "" {
+		return filepath.Join(m.SourceRoot, source)
 	}
 
 	return source

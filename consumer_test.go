@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/go-sourcemap/sourcemap"
+	"github.com/ohayocorp/sourcemap"
 )
 
 const jqSourceMapURL = "http://code.jquery.com/jquery-2.0.3.min.map"

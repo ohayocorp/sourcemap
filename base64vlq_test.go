@@ -1,16 +1,16 @@
-package base64vlq_test
+package sourcemap_test
 
 import (
 	"bytes"
 	"testing"
 
-	"github.com/go-sourcemap/sourcemap/internal/base64vlq"
+	"github.com/ohayocorp/sourcemap"
 )
 
 func TestEncodeDecode(t *testing.T) {
 	buf := new(bytes.Buffer)
-	enc := base64vlq.NewEncoder(buf)
-	dec := base64vlq.NewDecoder(buf)
+	enc := sourcemap.NewEncoder(buf)
+	dec := sourcemap.NewDecoder(buf)
 
 	for n := int32(-1000); n < 1000; n++ {
 		if err := enc.Encode(n); err != nil {
@@ -32,7 +32,7 @@ func TestEncodeDecode(t *testing.T) {
 
 func BenchmarkEncode(b *testing.B) {
 	buf := new(bytes.Buffer)
-	enc := base64vlq.NewEncoder(buf)
+	enc := sourcemap.NewEncoder(buf)
 
 	b.ResetTimer()
 
@@ -45,8 +45,8 @@ func BenchmarkEncode(b *testing.B) {
 
 func BenchmarkEncodeDecode(b *testing.B) {
 	buf := new(bytes.Buffer)
-	enc := base64vlq.NewEncoder(buf)
-	dec := base64vlq.NewDecoder(buf)
+	enc := sourcemap.NewEncoder(buf)
+	dec := sourcemap.NewDecoder(buf)
 
 	b.ResetTimer()
 

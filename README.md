@@ -1,6 +1,6 @@
 # Source maps consumer for Golang
 
-[![PkgGoDev](https://pkg.go.dev/badge/github.com/go-sourcemap/sourcemap)](https://pkg.go.dev/github.com/go-sourcemap/sourcemap)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/ohayocorp/sourcemap)](https://pkg.go.dev/github.com/ohayocorp/sourcemap)
 
 > This package is brought to you by :star: [**uptrace/uptrace**](https://github.com/uptrace/uptrace).
 > Uptrace is an open-source APM tool that supports distributed tracing, metrics, and logs. You can
@@ -12,7 +12,7 @@
 Install:
 
 ```shell
-go get -u github.com/go-sourcemap/sourcemap
+go get -u github.com/ohayocorp/sourcemap
 ```
 
 ## Quickstart

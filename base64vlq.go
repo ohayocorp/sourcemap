@@ -1,4 +1,4 @@
-package base64vlq
+package sourcemap
 
 import "io"
 
